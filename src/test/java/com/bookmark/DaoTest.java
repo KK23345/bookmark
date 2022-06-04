@@ -14,18 +14,21 @@ public class DaoTest {
 
     @Test
     void contextLoads() {
-        System.out.println(userDao.getByUId(1));
-        System.out.println(userDao.getByUName("zhangsan"));
+//        System.out.println(userDao.getByUId(2));
+//        System.out.println(userDao.getByUName("zhangsan"));
 
-        //User user = new User();
-        //user.setUName("kk");
-        //user.setUPassword("1111111");
-        //System.out.println(userDao.addUser(user));
+        User user = new User();
+        user.setName("kk");
+        user.setPassword("1111111");
+        user.setRootID(2);
+        System.out.println(userDao.addUser(user));
 
-        //user.setUPassword("123456");
+        user = userDao.getByUName("kk");
+        user.setPassword("123456");
+        System.out.println(user);
         //System.out.println(userDao.updateUser(user));
 
-        //System.out.println(userDao.deleteByUId(user.getUId()));
+//        System.out.println(userDao.deleteByUId(user.getUid()));
     }
 
 

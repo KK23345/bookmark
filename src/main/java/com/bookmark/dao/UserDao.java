@@ -6,19 +6,19 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface UserDao {
 
-    @Select("select * from user where u_id=#{uId}")
-    User getByUId(Integer uId);
+    @Select("select * from user where uid=#{uid}")
+    User getByUId(Integer uid);
 
-    @Select("select * from user where u_name=#{uName}")
-    User getByUName(String uName);
+    @Select("select * from user where name=#{name}")
+    User getByUName(String name);
 
-    @Insert("insert into user (u_name, u_password) values (#{uName}, #{uPassword})")
+    @Insert("insert into user (name, password, rootID) values (#{name}, #{password}, #{rootID})")
     int addUser(User user);
 
-    @Update("update user set u_name=#{uName}, u_password=#{uPassword} where u_id=#{uId}")
+    @Update("update user set name=#{name}, password=#{password}, rootID=#{rootID} where uid=#{uid}")
     int updateUser(User user);
 
-    @Delete("delete from user where u_id=#{uId}")
-    int deleteByUId(Integer uId);
+    @Delete("delete from user where uid=#{uid}")
+    int deleteByUId(Integer uid);
 
 }

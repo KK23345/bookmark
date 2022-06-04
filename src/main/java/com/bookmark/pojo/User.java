@@ -10,8 +10,13 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class User {
-    private Integer uId;
-    private String uName;
-    private String uPassword;
-    //TODO 注册相关信息，如手机号或邮箱
+
+    private Integer uid;     //
+
+    private String name;
+
+    private String password;
+
+    private Integer rootID;
+
 }
