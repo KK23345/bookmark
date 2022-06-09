@@ -1,11 +1,7 @@
 package com.bookmark.service;
 
 import com.bookmark.dao.UserDao;
-<<<<<<< HEAD
 import com.bookmark.pojo.BookmarkTree;
-=======
-import com.bookmark.pojo.Book;
->>>>>>> df7c5de030d7d264d4f3b8ce86e50cb5bd1111d0
 import com.bookmark.pojo.User;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +34,7 @@ public class UserService {
                 user.setRootID(bookID+1);
                 userDao.addUser(user);
                 int uid= userDao.getByUName(user.getName()).getUid();
-<<<<<<< HEAD
                 BookmarkTree b=new BookmarkTree(bookID+1,-1,0,uid,"","","",0,0);
-=======
-                Book b=new Book(bookID+1,-1,0,uid,"","","",0,0);
->>>>>>> df7c5de030d7d264d4f3b8ce86e50cb5bd1111d0
                 userDao.addBook(b);
                 return 1;
             } else {
