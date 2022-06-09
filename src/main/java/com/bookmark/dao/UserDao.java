@@ -1,6 +1,10 @@
 package com.bookmark.dao;
 
+<<<<<<< HEAD
 import com.bookmark.pojo.BookmarkTree;
+=======
+import com.bookmark.pojo.Book;
+>>>>>>> df7c5de030d7d264d4f3b8ce86e50cb5bd1111d0
 import com.bookmark.pojo.User;
 import org.apache.ibatis.annotations.*;
 
@@ -17,7 +21,11 @@ public interface UserDao {
     int addUser(User user);
 
     @Insert("insert into book(ID,parentID,type,uid,title,url,children,favorites) values(#{ID},#{parentID},#{type},#{uid},#{title},#{url},#{children},#{favorites});")
+<<<<<<< HEAD
     int addBook(BookmarkTree bookmarkTree);
+=======
+    int addBook(Book book);
+>>>>>>> df7c5de030d7d264d4f3b8ce86e50cb5bd1111d0
 
     @Select ("select coalesce(max(ID),0) from bookmark.book")
     int getMaxBookID();

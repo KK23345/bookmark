@@ -18,10 +18,17 @@ public class UserController {
     @Resource
     private UserService userService;
     private Map<String,String> res = new HashMap<>();
+<<<<<<< HEAD
 
     @GetMapping(value = "/login")
     public @ResponseBody Object login(User user) {
 
+=======
+    //@RequestMapping(value = "/login", method = RequestMethod.POST)
+    @GetMapping(value = "/login")
+    public @ResponseBody Object login(User user) {
+
+>>>>>>> df7c5de030d7d264d4f3b8ce86e50cb5bd1111d0
         int result=userService.login(user);
         if(result==1)
         {
@@ -42,7 +49,10 @@ public class UserController {
             res.put("httpCode","200");
         }
         return res;
+<<<<<<< HEAD
 
+=======
+>>>>>>> df7c5de030d7d264d4f3b8ce86e50cb5bd1111d0
     }
 
     @GetMapping(value = "/register")
