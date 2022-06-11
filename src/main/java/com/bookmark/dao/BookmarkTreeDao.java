@@ -38,6 +38,9 @@ public interface BookmarkTreeDao {
     @Select("select * from book where isPublic=1 and parentID=0")
     List<BookmarkTree> getPublicBookmarks();
 
+    @Select("select ID from book where parentID=#{parentID}")
+    List<Integer> getAllChildID(Integer parentID);
+
     @Select("select rootID from user where uid=#{uid}")
     int getBookmarkTreeIDByUid(Integer uid);
 

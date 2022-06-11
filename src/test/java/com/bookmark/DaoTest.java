@@ -25,8 +25,8 @@ public class DaoTest {
 
     @Test
     void userDaoTest() {
-        System.out.println(userDao.getByUId(2));
-        System.out.println(userDao.getByUName("zhangsan"));
+        System.out.println(btDao.getAllChildID(15));
+        //System.out.println(userDao.getByUName("zhangsan"));
 
 //        User user = new User();
 //        user.setName("kk");
