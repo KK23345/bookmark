@@ -65,11 +65,13 @@ public class BookmarkTreeService {
         if(btDao.deleteBookmarkByID(btID, uid) == 1) {
             if(bt.getParentID() > 0) { //当前书签夹还有父书签夹，需要更新父书签夹的children信息
                 Integer parentID = bt.getParentID();
-                BookmarkTree parentBT = btDao.getBookmarkTreeByID(btID);
-                String children = parentBT.getChildren(); // children: "1,2,3,"
+                BookmarkTree parentBT = btDao.getBookmarkTreeByID(parentID);
+                String children = parentBT.getChildren();// children: "1,2,3,"
                 children = children.replace(btID+",", "");
                 btDao.updateBookmarkTreeByID(parentID, children);
             }
+            //如果要删除的是书签夹，需要把所有子节点都删除
+            if(bt.getType()==0) deleteAllChild(btID,uid);
             return 1;
         } else {
             return -2;
@@ -99,7 +101,19 @@ public class BookmarkTreeService {
         }
         return -2;
     }
+    private void deleteAllChild(Integer pid,Integer uid){
+        for(int childId:btDao.getAllChildID(pid)){
+            int type=btDao.getBookmarkTreeByID(childId).getType();
+            if(type==0){
+                btDao.deleteBookmarkByID(childId, uid);
+                deleteAllChild(childId,uid);
+            }
+            else{
+                btDao.deleteBookmarkByID(childId, uid);
+            }
+        }
 
+    }
     //======================插件端的接口==============================
 
     /**
