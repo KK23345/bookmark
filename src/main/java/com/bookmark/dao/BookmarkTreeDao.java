@@ -12,23 +12,23 @@ import java.util.List;
 public interface BookmarkTreeDao {
 
     /**
-     * Description: 1.针对插件端的输入, 更新书签树信息(同步)
+     * Description: 1.针对插件端的输入, 更新书签树信息(同步) //TODO
      *              2.保存他人公开书签夹到自己书签树(在service层将children更新)
-     * @param bookmarkTree: service层将传来的json格式数据转为BookmarkTree对象
+     * @param ID: 书签夹id
+     * @param children: 书签夹更新后的children信息
      * @return:  操作成功 ? 1 : 0
      */
-    @Update("update book set children=#{children} where uid=#{uid}")
-    int updateBookmarkTreeByUid(BookmarkTree bookmarkTree);
+    @Update("update book set children=#{children} where ID=#{ID}")
+    int updateBookmarkTreeByID(Integer ID, String children);
     
     /**
       * Description: 1.针对插件端和前端, 获取书签树数据(恢复)
       *              2.获取某个用户书签夹下的数据
       * @param ID: 书签夹id
-	  * @param uid: 书签树所属用户的id
       * @return:  BookmarkTree对象，可在服务层转为json格式
       */
-    @Select("select * from book where ID=#{ID} and uid=#{uid}")
-    BookmarkTree getBookmarkTreeByID(Integer ID, Integer uid);
+    @Select("select * from book where ID=#{ID}")
+    BookmarkTree getBookmarkTreeByID(Integer ID);
 
     /**
       * Description: 返回所有用户公开并且是根结点(parentID=0)的书签(夹)信息
@@ -38,28 +38,42 @@ public interface BookmarkTreeDao {
     @Select("select * from book where isPublic=1 and parentID=0")
     List<BookmarkTree> getPublicBookmarks();
 
+    @Select("select rootID from user where uid=#{uid}")
+    int getBookmarkTreeIDByUid(Integer uid);
+
+    /**
+      * Description: 获得当前书签夹(ID)所属的用户id
+      * @param ID: 当前书签夹的ID
+      * @return:  所属用户ID
+      */
+    @Select("select uid from book where ID=#{ID}")
+    int getBookmarkTreeUidByID(Integer ID);
+
     /**
       * Description: 修改书签(夹)名称
-      * @param bookmarkTree: service层封装好的修改后的书签(夹)
+      * @param ID: 书签夹id
+      * @param uid: 书签树所属用户的id
       * @return: 操作成功 ? 1 : 0
       */
-    @Update("update book set title=#{title} where ID=#{ID}")
-    int updateBookmarkName(BookmarkTree bookmarkTree);
+    @Update("update book set title=#{newTitle} where ID=#{ID} and uid=#{uid}")
+    int updateBookmarkName(Integer ID, Integer uid, String newTitle);
 
     /**
       * Description: 公开(取消公开)书签夹
-      * @param bookmarkTree: service层封装好的修改后的书签(夹)
+      * @param ID: 书签夹id
+      * @param uid: 书签树所属用户的id
       * @return: 操作成功 ? 1 : 0
       */
-    @Update("update book set isPublic=#{isPublic} where ID=#{ID}")
-    int updateBookmarkIsPublic(BookmarkTree bookmarkTree);
+    @Update("update book set isPublic=1 where ID=#{ID} and uid=#{uid}")
+    int updateBookmarkIsPublic(Integer ID, Integer uid);
 
     /**
       * Description: 删除书签(夹)
-      * @param bookmarkTree: service层封装好的要修改的书签(夹)
+      * @param ID: 书签夹id
+      * @param uid: 书签树所属用户的id
       * @return: 操作成功 ? 1 : 0
       */
-    @Delete("delete from book where ID=#{ID}")
-    int deleteBookmarkByID(BookmarkTree bookmarkTree);
+    @Delete("delete from book where ID=#{ID} and uid=#{uid}")
+    int deleteBookmarkByID(Integer ID, Integer uid);
 
 }

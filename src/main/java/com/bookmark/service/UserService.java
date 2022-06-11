@@ -34,7 +34,7 @@ public class UserService {
                 user.setRootID(bookID+1);
                 userDao.addUser(user);
                 int uid= userDao.getByUName(user.getName()).getUid();
-                BookmarkTree b=new BookmarkTree(bookID+1,-1,0,uid,"","","",0,0);
+                BookmarkTree b=new BookmarkTree(bookID+1,0,0,uid,user.getName()+"的书签夹","","",0,0);
                 userDao.addBook(b);
                 return 1;
             } else {

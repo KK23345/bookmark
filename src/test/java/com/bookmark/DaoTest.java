@@ -19,7 +19,7 @@ public class DaoTest {
     @Test
     void bookmarkTreeDaoTest() {
         System.out.println(btDao.getPublicBookmarks());
-        System.out.println(btDao.getBookmarkTreeByID(1, 1));
+        System.out.println(btDao.getBookmarkTreeByID(1));
     }
 
 

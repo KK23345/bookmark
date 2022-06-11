@@ -30,11 +30,9 @@ CHANGE COLUMN `url` `url` TEXT NULL ,
 CHANGE COLUMN `children` `children` TEXT NULL ,
 CHANGE COLUMN `favorites` `favorites` INT NULL DEFAULT 0 ;
 
-ALTER TABLE `bookmark`.`book`
-    CHANGE COLUMN `ID` `ID` INT NOT NULL AUTO_INCREMENT ;
 
-insert into book values(1,0,0,1,'书签夹1','http://...', '3', 1, 0);
-insert into book values(2,0,0,2,'书签夹2','http://...', '4,5', 1, 0);
+insert into book values(1,0,0,1,'书签夹1','http://...', '3,', 1, 0);
+insert into book values(2,0,0,2,'书签夹2','http://...', '4,5,', 1, 0);
 
 insert into book values(3,1,1,1,'书签1','http://...', '', 1, 0);
 insert into book values(4,2,1,2,'书签2','http://...', '', 1, 0);

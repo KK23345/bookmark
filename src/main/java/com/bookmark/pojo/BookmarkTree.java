@@ -25,7 +25,7 @@ public class BookmarkTree {
 
     private String children;    // 子书签(夹)信息
 
-    private Integer isPublic;   // 是否公开
+    private Integer isPublic;   // 是否公开(1:公开; 0:私密)
 
     private Integer favorites;  // 点赞量
 

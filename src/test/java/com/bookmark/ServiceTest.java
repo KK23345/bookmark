@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 
 @SpringBootTest
 public class ServiceTest {
@@ -20,5 +21,8 @@ public class ServiceTest {
         user.setPassword("123456");
         int result=userService.register(user);
         System.out.println(result);
+//        String children = "1,2,3,";
+//        System.out.println(children.replace("3,", ""));
+//        System.out.println(Arrays.toString(children.split(",")));
     }
 }
