@@ -5,10 +5,12 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Mapper
+@Component
 public interface BookmarkTreeDao {
 
     /**
@@ -38,6 +40,12 @@ public interface BookmarkTreeDao {
     @Select("select * from book where isPublic=1 and parentID=0")
     List<BookmarkTree> getPublicBookmarks();
 
+    @Select("select ID from book where parentID=#{parentID}")
+    List<Integer> getAllChildID(Integer parentID);
+
+    @Select("select * from book where parentID=#{parentID}")
+    List<BookmarkTree> getAllChild(Integer parentID);
+
     @Select("select rootID from user where uid=#{uid}")
     int getBookmarkTreeIDByUid(Integer uid);
 
@@ -64,8 +72,8 @@ public interface BookmarkTreeDao {
       * @param uid: 书签树所属用户的id
       * @return: 操作成功 ? 1 : 0
       */
-    @Update("update book set isPublic=1 where ID=#{ID} and uid=#{uid}")
-    int updateBookmarkIsPublic(Integer ID, Integer uid);
+    @Update("update book set isPublic=#{isPublic} where ID=#{ID} and uid=#{uid}")
+    int updateBookmarkIsPublic(Integer ID, Integer uid, Integer isPublic);
 
     /**
       * Description: 删除书签(夹)

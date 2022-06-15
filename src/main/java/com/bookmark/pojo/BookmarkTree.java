@@ -29,6 +29,18 @@ public class BookmarkTree {
 
     private Integer favorites;  // 点赞量
 
+    public BookmarkTree(BookmarkTree bt) {
+        this.ID        = bt.getID();
+        this.parentID  = bt.getParentID();
+        this.type      = bt.getType();
+        this.uid       = bt.getUid();
+        this.title     = bt.getTitle();
+        this.url       = bt.getUrl();
+        this.children  = bt.getChildren();
+        this.isPublic  = bt.getIsPublic();
+        this.favorites = bt.getFavorites();
+    }
+
 }
 //"tree": {
 //   "title": "书签夹1",

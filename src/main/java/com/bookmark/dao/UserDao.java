@@ -13,6 +13,9 @@ public interface UserDao {
     @Select("select * from user where name=#{name}")
     User getByUName(String name);
 
+    @Select("select * from user where name=#{name} and password=#{password}")
+    User verifyUser(String name, String password);
+
     @Insert("insert into user (name, password, rootID) values (#{name}, #{password}, #{rootID})")
     int addUser(User user);
 
@@ -21,6 +24,12 @@ public interface UserDao {
 
     @Select ("select coalesce(max(ID),0) from bookmark.book")
     int getMaxBookID();
+
+    @Select("select rootID from user where name=#{name}")
+    int getRootIDByName(String name);
+
+    @Select("select uid from user where name=#{name}")
+    int getUIDByName(String name);
 
     @Update("update user set name=#{name}, password=#{password}, rootID=#{rootID} where uid=#{uid}")
     int updateUser(User user);
