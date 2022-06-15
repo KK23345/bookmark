@@ -1,5 +1,7 @@
 [测试数据](./bookmark.sql)
 
+![image-20220615162701319](README.assets/image-20220615162701319.png)
+
 ```java
 //书签树相关接口
 

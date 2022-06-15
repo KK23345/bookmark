@@ -4,9 +4,12 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bookmark?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: root
+#    url: jdbc:mysql://localhost:3306/bookmark?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
+#    username: root
+#    password: root
+    url: jdbc:mysql://47.96.41.120:3306/bookmark1?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
+    username: bookmark1
+    password: 123456
 
 mybatis:
   configuration:
