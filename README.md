@@ -1,40 +1,89 @@
-# bookmark
+[测试数据](./bookmark.sql)
 
+```java
+//书签树相关接口
 
+/**
+* Description: 重命名书签(夹)
+* @param bt: 要操作的书签(夹)
+* @param newName: 新名字
+* @return:  Map<String, String> response:
+*           k-v:  "msg"       :  操作成功 / 权限不够 / 操作失败
+*                 "errorCode" :  1 / -1 / -2
+*                 "httpCode"  :  200
+*/
+@GetMapping("/renameBT/{newName}")
+public @ResponseBody Object renameBT(@RequestBody BookmarkTree bt, @PathVariable("newName") String newName) 
 
-## 测试数据
+/**
+* Description: 公开或私密 某个书签夹(其子书签夹也一致)
+* @param bt: 要操作的书签树
+* @param isPublic: isPublic == 0 ? 私密 : 公开(1)
+* @return:  Map<String, String> response:
+*           k-v:  "msg"       :  操作成功 / 权限不够 / 操作失败
+*                 "errorCode" :  1 / -1 / -2
+*                 "httpCode"  :  200
+*/
+@GetMapping("/publicBTOrNot/{isPublic}")
+public @ResponseBody Object publicBTOrNot(@RequestBody BookmarkTree bt, @PathVariable("isPublic") Integer isPublic) 
 
-```
-对于书签/书签夹
+/**
+* Description:  删除某个书签夹(其子书签(夹)也一致)
+* @param bt: 要操作的书签树
+* @return:  Map<String, String> response:
+*           k-v:  "msg"       :  操作成功 / 权限不够 / 操作失败
+*                 "errorCode" :  1 / -1 / -2
+*                 "httpCode"  :  200
+*/
+@GetMapping("/deleteBT")
+public @ResponseBody Object deleteBT(@RequestBody BookmarkTree bt) 
 
-{"title": "书签夹1",
-	"ID": 1, "parentID": 0, "uid": 1, "type": 0, "url": "http://...",
-	"isPublic": 1, "favorites": 0, "children": "[书签1]"}
-	
-{"title": "书签夹2",
-	"ID": 2, "parentID": 0, "uid": 2, "type": 0, "url": "http://...",
-	"isPublic": 1, "favorites": 0, "children": "[书签2, 书签3]"}
+/**
+* Description:  在某个书签夹下创建书签夹
+* @param parentBT: 要操作的书签树
+* @param btName: 名称               
+* @return:  Map<String, String> response:
+*           k-v:  "msg"       :  操作成功 / 操作失败
+*                 "errorCode" :  1 / -1 
+*                 "httpCode"  :  200
+*/
+@GetMapping("/createBT/{btName}")
+public @ResponseBody Object createBT(@RequestBody BookmarkTree parentBT, @PathVariable("btName") String btName) 
 
-{"title": "书签1",
-	"ID": 3, "parentID": 1, "uid": 1, "type": 1, "url": "http://...",
-	"isPublic": 1, "favorites": 0, "children": ""}
+/**
+* Description:  复制某个书签夹(其子书签(夹)也一致)到当前用户(uid)根书签夹下
+* @param bt: 要操作的书签树
+* @return:  Map<String, String> response:
+*           k-v:  "msg"       :  操作成功 / 权限不够 / 操作失败
+*                 "errorCode" :  1 / -1 / -2
+*                 "httpCode"  :  200
+*/
+@GetMapping("/copyBT/{uid}")
+public @ResponseBody Object copyBT(@RequestBody BookmarkTree bt, @PathVariable("uid") Integer uid) 
 
-{"title": "书签2",
-	"ID": 4, "parentID": 2, "uid": 2, "type": 1, "url": "http://...",
-	"isPublic": 1, "favorites": 0, "children": ""}
-	
-{"title": "书签3",
-	"ID": 5, "parentID": 2, "uid": 2, "type": 1, "url": "http://...",
-	"isPublic": 1, "favorites": 0, "children": ""}
-```
+/**
+* Description:  上传书签树
+* @param data:  json 格式书签树
+* @return:  Map<String, String> response:
+*           k-v:  "msg"       :  操作成功 / 操作失败
+*                 "errorCode" :  1 / -1
+*                 "httpCode"  :  200
+*                 "data"      :  上传时间(操作成功才有该属性)
+*/
+@GetMapping("uploadBT")
+public @ResponseBody Object uploadBT(@RequestBody String data) 
 
-![image-20220606170216706](README.assets/image-20220606170216706.png)
+/**
+* Description: 获取当前用户所有的书签夹信息
+* @param uid:  当前用户
+* @return:  Map<String, String> response:
+*           k-v:  "msg"       :  操作成功 / 操作失败
+*                 "errorCode" :  1 / -1
+*                 "httpCode"  :  200
+*                 "data"      :  json格式的书签树字符串(操作成功才有该属性)
+*/
+@GetMapping("obtainBT/{uid}")
+public @ResponseBody Object obtainBT(@PathVariable("uid") Integer uid) 
 
-```sql
-insert into book values(1,0,0,1,"书签夹1","http://...", "[{"title":"书签1","ID":3,"parentID":1,"uid":1,"type":1,"url":"http://...","isPublic":1,"favorites":0,"children":""}]", 1, 0);
-insert into book values(2,0,0,2,"书签夹2","http://...", "[{"title":"书签2","ID":4,"parentID":2,"uid":2,"type":1,"url":"http://...","isPublic": 1, "favorites": 0, "children":""},{"title":"书签3","ID":5,"parentID":2,"uid":2,"type":1,"url":"http://...","isPublic": 1, "favorites":0,"children":""}]", 1, 0);
-insert into book values(3,1,0,1,"书签1","http://...", "", 1, 0);
-insert into book values(4,2,1,2,"书签2","http://...", "", 1, 0);
-insert into book values(5,2,1,2,"书签3","http://...", "", 1, 0);
 ```
 
