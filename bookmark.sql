@@ -1,5 +1,5 @@
-create database bookmark;
-use bookmark;
+# create database bookmark1;
+use bookmark1;
 
 create table `user` (
 	uid int(11) NOT NULL auto_increment,
@@ -22,7 +22,7 @@ create table `book` (
     primary key (ID)
 );
 
-ALTER TABLE `bookmark`.`book`
+ALTER TABLE `bookmark1`.`book`
 CHANGE COLUMN `url` `url` TEXT NULL ,
 CHANGE COLUMN `children` `children` TEXT NULL ,
 CHANGE COLUMN `favorites` `favorites` INT NULL DEFAULT 0 ;

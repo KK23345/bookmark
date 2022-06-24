@@ -19,9 +19,12 @@ public class UserController {
     private UserService userService;
     private Map<String,String> res = new HashMap<>();
 
+    // url:47.96.41.120:10030/login?name=kk&password=123456
     @GetMapping(value = "/login")
-    public @ResponseBody Object login(User user) {
-
+    public @ResponseBody Object login(@RequestParam HashMap<String, String> data) {
+        User user = new User();
+        user.setName(data.get("name"));
+        user.setPassword(data.get("password"));
         int result=userService.login(user);
         if(result==1)
         {
@@ -44,8 +47,12 @@ public class UserController {
         return res;
     }
 
+    // url:47.96.41.120:10030/login?name=test03&password=123456
     @GetMapping(value = "/register")
-    public @ResponseBody Object register(User user) {
+    public @ResponseBody Object register(@RequestParam HashMap<String, String> data) {
+        User user = new User();
+        user.setName(data.get("name"));
+        user.setPassword(data.get("password"));
         int result= userService.register(user);
         Map<String,String> res = new HashMap<>();
         if(result==1)

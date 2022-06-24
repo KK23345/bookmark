@@ -20,14 +20,18 @@ public class ControllerTest {
     @Test
     void testFrontAPI() { //测试前端的接口
 
+        StringBuilder test = new StringBuilder();
+        test.append("\"test").append("\"");
+        System.out.println(test.toString());
+
         //System.out.println("copyBT res : " + btService.copyBT(3,7,4));
 
         //System.out.println(btService.createBT(1, 1, "test1"));
 
         //System.out.println(btService.deleteBT(3, 7));
 
-        BookmarkTree bt = btDao.getBookmarkTreeByID(19);
-        System.out.println(btService.publicBTOrNot(bt, 1));
+        //BookmarkTree bt = btDao.getBookmarkTreeByID(19);
+        //System.out.println(btService.publicBTOrNot(bt, 1));
 
         //System.out.println(btService.renameBT(2, 2,"lisi的书签夹"));
     }
@@ -43,8 +47,8 @@ public class ControllerTest {
     void testUploadBT() {
         String data = "{\n" +
                 "  \"data\": {\n" +
-                "    \"userName\": \"kk\",\n" +
-                "    \"password\": \"123456\",\n" +
+                "    \"userName\": \"test03\",\n" +
+                "    \"password\": \"12345678\",\n" +
                 "    \"children\": [\n" +
                 "      {\n" +
                 "        \"title\": \"kk的收藏夹\",\n" +
