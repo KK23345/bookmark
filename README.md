@@ -59,7 +59,7 @@
       * Description: 重命名书签(夹)
       * @param data: url = 47.96.41.120:10030/renameBT?uid= &btID= &newName=
       * @return:  Map<String, String> response:
-      *           k-v:  "msg"       :  操作成功 / 权限不够 / 操作失败
+      *           k-v:  "msg"       :  操作成功 / 书签(夹)不存在 / 操作失败
       *                 "errorCode" :  1 / -1 / -2
       *                 "httpCode"  :  200
       */

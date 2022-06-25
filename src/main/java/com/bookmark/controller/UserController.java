@@ -28,7 +28,7 @@ public class UserController {
         int result=userService.login(user);
         if(result==1)
         {
-            int uid=userService.getUid(user);
+            int uid=userService.getUID(user);
             res.put("msg","success");
             res.put("errorCode","1");
             res.put("httpCode","200");
@@ -47,7 +47,7 @@ public class UserController {
         return res;
     }
 
-    // url:47.96.41.120:10030/login?name=test03&password=123456
+    // url:47.96.41.120:10030/login?name= &password=
     @GetMapping(value = "/register")
     public @ResponseBody Object register(@RequestParam HashMap<String, String> data) {
         User user = new User();
@@ -57,7 +57,7 @@ public class UserController {
         Map<String,String> res = new HashMap<>();
         if(result==1)
         {
-            int uid=userService.getUid(user);
+            int uid=userService.getUID(user);
             res.put("msg","success");
             res.put("errorCode","1");
             res.put("httpCode","200");

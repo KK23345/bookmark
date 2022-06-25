@@ -1,5 +1,6 @@
 server:
   port: 10030
+  max-http-header-size: 8192
 
 spring:
   datasource:

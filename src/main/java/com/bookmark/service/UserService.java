@@ -32,9 +32,12 @@ public class UserService {
             if (u == null) { //不存在名称相同的用户
                 int bookID= userDao.getMaxBookID();
                 user.setRootID(bookID+1);
+
+                int maxUID = userDao.getMaxUID();
+                user.setUid(maxUID+1);
                 userDao.addUser(user);
-                int uid= userDao.getByUName(user.getName()).getUid();
-                BookmarkTree b=new BookmarkTree(bookID+1,0,0,uid,user.getName()+"的书签夹","","",0,0);
+
+                BookmarkTree b=new BookmarkTree(bookID+1,0,0,user.getUid(),user.getName()+"的书签夹","","",0,0);
                 userDao.addBook(b);
                 return 1;
             } else {
@@ -42,17 +45,13 @@ public class UserService {
             }
         }
         catch(Exception e){
+            e.printStackTrace();
             return -2;
         }
     }
 
-
-    public Integer getUid(User user){
-        User u=userDao.getByUName(user.getName());
-        if(u!=null)
-            return u.getUid();
-        else return -1;
+    public Integer getUID(User user) {
+        int res = userDao.getUIDByName(user.getName());
+        return res != 0 ? res : -1;
     }
-
-
 }

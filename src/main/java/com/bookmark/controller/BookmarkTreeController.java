@@ -55,20 +55,21 @@ public class BookmarkTreeController {
       * Description: 重命名书签(夹)
       * @param data: url = 47.96.41.120:10030/renameBT?uid= &btID= &newName=
       * @return:  Map<String, String> response:
-      *           k-v:  "msg"       :  操作成功 / 权限不够 / 操作失败
+      *           k-v:  "msg"       :  操作成功 / 书签(夹)不存在 / 操作失败
       *                 "errorCode" :  1 / -1 / -2
       *                 "httpCode"  :  200
       */
     @GetMapping("/renameBT")
     public @ResponseBody Object renameBT(@RequestParam HashMap<String, String> data) {
         Map<String, String> response = new HashMap<>();
+        System.out.println(data.get("uid") + " " + data.get("btID"));
         int res = btService.renameBT(Integer.parseInt(data.get("uid")), Integer.parseInt(data.get("btID")), data.get("newName"));
         if(res == 1) {
             response.put("msg", "操作成功");
             response.put("errorCode", "1");
             response.put("httpCode", "200");
         } else if(res == -1){
-            response.put("msg", "权限不够");
+            response.put("msg", "书签(夹)不存在");
             response.put("errorCode", "-1");
             response.put("httpCode", "200");
         } else {

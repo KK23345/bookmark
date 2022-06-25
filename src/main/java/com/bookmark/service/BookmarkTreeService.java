@@ -67,16 +67,20 @@ public class BookmarkTreeService {
       * @return: > 0 : 重命名成功 ; -1 : 权限不够(其他人不能更改自己的书签夹名) ; -2 : sql更新名称失败
       */
     public Integer renameBT(Integer uid, Integer btID, String newName) {
-        int btUid;
-        try {
-            btUid = btDao.getBookmarkTreeUidByID(btID);
-        } catch (Exception e) { //btID不存在，重命名失败
-            return -2;
-        }
+//        System.out.println(uid);
+//        int btUid;
+//        try {
+//            btUid = btDao.getBookmarkTreeUidByID(btID);
+//        } catch (Exception e) { //btID不存在，重命名失败
+//            return -2;
+//        }
+//        System.out.println(btUid);
 
-        if(!uid.equals(btUid)) return -1;
+        //if(!uid.equals(btUid)) return -1;
+        BookmarkTree bt = btDao.getBookmarkTreeByID(btID);
+        if(bt == null) return -1;
 
-        return (btDao.updateBookmarkName(btID, uid, newName) == 1)
+        return (btDao.updateBookmarkName(btID, bt.getUid(), newName) == 1)
                 ? 1
                 : -2;
     }
