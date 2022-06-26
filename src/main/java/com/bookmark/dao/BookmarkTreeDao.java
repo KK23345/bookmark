@@ -1,6 +1,7 @@
 package com.bookmark.dao;
 
 import com.bookmark.pojo.BookmarkTree;
+import com.bookmark.pojo.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -12,6 +13,12 @@ import java.util.List;
 @Mapper
 @Component
 public interface BookmarkTreeDao {
+
+    @Update("update book set favorites=favorites+1 where ID=#{ID}")
+    int updateBTFavoritesByID(Integer ID);
+
+    @Select("select * from user where uid=#{uid}")
+    User getByUId(Integer uid);
 
     /**
      * Description: 1.针对插件端的输入, 更新书签树信息(同步) //TODO
@@ -37,7 +44,7 @@ public interface BookmarkTreeDao {
       * @param
       * @return: List<BookmarkTree>
       */
-    @Select("select * from book where isPublic=1 and parentID=0")
+    @Select("select * from book where isPublic=1 and type=0 order by uid")
     List<BookmarkTree> getPublicBookmarks();
 
     @Select("select ID from book where parentID=#{parentID}")

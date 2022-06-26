@@ -20,7 +20,7 @@ public class UserService {
     public Integer login(User user) {
         User u = userDao.getByUName(user.getName()); //从数据库中查询当前user用户
         if(u == null)  return -2;
-        else if(u.getPassword().equals(user.getPassword())) return 1;
+        else if(u.getPassword().equals(user.getPassword())) return u.getRootID();
         else return -1;
         //return u != null && u.getPassword().equals(user.getPassword());
     }
@@ -52,6 +52,6 @@ public class UserService {
 
     public Integer getUID(User user) {
         int res = userDao.getUIDByName(user.getName());
-        return res != 0 ? res : -1;
+        return res >= 0 ? res : -1;
     }
 }

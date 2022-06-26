@@ -20,9 +20,9 @@ public class ControllerTest {
     @Test
     void testFrontAPI() { //测试前端的接口
 
-        StringBuilder test = new StringBuilder();
-        test.append("\"test").append("\"");
-        System.out.println(test.toString());
+        String test = "";
+        String[] arr = test.split(",");
+        System.out.println(arr.length);
 
         //System.out.println("copyBT res : " + btService.copyBT(3,7,4));
 
@@ -47,8 +47,8 @@ public class ControllerTest {
     void testUploadBT() {
         String data = "{\n" +
                 "  \"data\": {\n" +
-                "    \"userName\": \"test03\",\n" +
-                "    \"password\": \"12345678\",\n" +
+                "    \"userName\": \"test05\",\n" +
+                "    \"password\": \"123456\",\n" +
                 "    \"children\": [\n" +
                 "      {\n" +
                 "        \"title\": \"kk的收藏夹\",\n" +

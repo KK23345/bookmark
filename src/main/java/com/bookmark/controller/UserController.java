@@ -26,13 +26,14 @@ public class UserController {
         user.setName(data.get("name"));
         user.setPassword(data.get("password"));
         int result=userService.login(user);
-        if(result==1)
+        if(result >= 0)
         {
             int uid=userService.getUID(user);
             res.put("msg","success");
             res.put("errorCode","1");
             res.put("httpCode","200");
             res.put("uid",Integer.toString(uid));
+            res.put("rootID", Integer.toString(result));
         }
         else if(result==-1) {
             res.put("msg","wrong password");

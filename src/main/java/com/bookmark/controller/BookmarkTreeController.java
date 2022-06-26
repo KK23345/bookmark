@@ -18,6 +18,26 @@ public class BookmarkTreeController {
     private BookmarkTreeService btService;
 
     //https://blog.csdn.net/u010412719/article/details/69788227
+    //https://www.sojson.com/
+
+    @GetMapping("/publicBTs")
+    public @ResponseBody Object getPublicBT() {
+        Map<String, String> response = new HashMap<>();
+        String res = btService.getPublicBT();
+        JSONObject jsonObject = JSON.parseObject(res);
+        if(res.equals("error")) {
+            response.put("msg", "获取失败");
+            response.put("errorCode", "-1");
+            response.put("httpCode", "200");
+        } else {
+            response.put("msg", "获取成功");
+            response.put("errorCode", "1");
+            response.put("httpCode", "200");
+            //response.put("data", res);
+            response.put("data", jsonObject.toJSONString());
+        }
+        return response;
+    }
 
     /**
      * Description: 获取某个书签夹下的内容（书签夹和书签），向下一层
@@ -33,7 +53,7 @@ public class BookmarkTreeController {
         Map<String, String> response = new HashMap<>();
         String res = btService.getBtNextLayer(Integer.parseInt(data.get("uid")), Integer.parseInt(data.get("btID")));
         //System.out.println(res);
-        JSONObject jsonObject = JSON.parseObject(res);
+        JSONObject jsonObject = JSON.parseObject(res); //解析成json对象，属性顺序会改变
         //System.out.println(jsonObject);
 
         if(res.equals("error")) {
@@ -203,8 +223,9 @@ public class BookmarkTreeController {
      *                 "data"      :  上传时间(操作成功才有该属性)
      */
     @PostMapping("/uploadBT")
-    public @ResponseBody Object uploadBT(String data) {
+    public @ResponseBody Object uploadBT(@RequestParam("data") String data) {
         Map<String, String> response = new HashMap<>();
+        //System.out.println(data);
         JSONObject jsonObject = JSONObject.parseObject(data);
 
         long res = btService.uploadBT(jsonObject.getJSONObject("data"));
@@ -232,14 +253,13 @@ public class BookmarkTreeController {
      *                 "httpCode"  :  200
      *                 "data"      :  json格式的书签树字符串(操作成功才有该属性)
      */
-    @GetMapping("/obtainBT/{uid}")
-    public @ResponseBody Object obtainBT(@PathVariable("uid") Integer uid) {
+    @GetMapping("/obtainBT")
+    public @ResponseBody Object obtainBT(@RequestParam("uid") Integer uid) {
         Map<String, String> response = new HashMap<>();
 
         String res = btService.obtainBT(uid);
         //System.out.println(res);
         //res.replaceAll("\\", "");
-        JSONObject jsonObject = JSON.parseObject(res);
         //System.out.println(jsonObject);
 
         if(res.equals("error")) {
@@ -247,6 +267,7 @@ public class BookmarkTreeController {
             response.put("errorCode", "-1");
             response.put("httpCode", "200");
         } else {
+            JSONObject jsonObject = JSON.parseObject(res);
             response.put("msg", "获取成功");
             response.put("errorCode", "1");
             response.put("httpCode", "200");

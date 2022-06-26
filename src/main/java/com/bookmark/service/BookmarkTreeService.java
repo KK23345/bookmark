@@ -27,7 +27,48 @@ public class BookmarkTreeService {
     private UserDao userDao;
 
     //======================前端的接口==============================
-    
+    private static StringBuilder publicBT;
+    public String getPublicBT() {
+        publicBT = new StringBuilder("{\"data\":[");
+        List<BookmarkTree> publicBTs = btDao.getPublicBookmarks();
+        Map<Integer, ArrayList<BookmarkTree>> uidToBTs = new HashMap<>();
+        for (BookmarkTree bt : publicBTs) { ;
+            ArrayList<BookmarkTree> arr = uidToBTs.getOrDefault(bt.getUid(), new ArrayList<BookmarkTree>());
+            arr.add(bt);
+            uidToBTs.put(bt.getUid(), arr);
+        }
+
+        int flag = 0;
+        for(Integer uid : uidToBTs.keySet()) {
+            //System.out.println(uid + ":" + uidToBTs.get(uid));
+            doGetPublicBts(uid, uidToBTs.get(uid));
+            if(flag < uidToBTs.keySet().size() - 1) publicBT.append(",");
+            flag++;
+        }
+
+        publicBT.append("]}");
+        return publicBT.toString();
+    }
+
+    private static void doGetPublicBts(Integer uid, ArrayList<BookmarkTree> arr) {
+        publicBT.append("{");
+        publicBT.append("\"uid\":").append("\"").append(uid).append("\"");
+        User user = btDao.getByUId(uid);
+        publicBT.append("\"name\":").append("\"").append(user.getName()).append("\"");
+        publicBT.append("\"publicBT\":[");
+
+        for (int i = 0; i < arr.size(); i++) {
+            publicBT.append("{");
+            publicBT.append("\"title\":").append("\"").append(arr.get(i).getTitle()).append("\"");
+            publicBT.append("\"btID\":").append("\"").append(arr.get(i).getID()).append("\"");
+            publicBT.append("\"type\":").append("\"").append(arr.get(i).getType()).append("\"");
+            publicBT.append("\"favorites\":").append("\"").append(arr.get(i).getFavorites()).append("\"");
+            publicBT.append("}");
+            if(i < arr.size() - 1) publicBT.append(",");
+        }
+        publicBT.append("]}");
+    }
+
     private static StringBuilder nxtLayer;
     /**
       * Description: 获取某个书签夹下的内容（书签夹和书签），向下一层
@@ -39,20 +80,29 @@ public class BookmarkTreeService {
         nxtLayer = new StringBuilder("{\"data\":{");
 
         BookmarkTree bt = btDao.getBookmarkTreeByID(btID);
-        if(bt == null || bt.getUid() != uid) return "error";
+        User user = userDao.getByUId(uid);
+        if(bt == null || bt.getUid() != uid || user == null) return "error";
 
+        nxtLayer.append("\"username\":").append("\"").append(user.getName()).append("\",");
         nxtLayer.append("\"children\":[");
         String[] childIDs = bt.getChildren().split(",");
-        for(int i = 0; i < childIDs.length; i++) {
-            BookmarkTree child = btDao.getBookmarkTreeByID(Integer.parseInt(childIDs[i]));
-            nxtLayer.append("{\"type\":").append("\"").append(child.getType()).append("\",");
-            nxtLayer.append("\"title\":").append("\"").append(child.getTitle()).append("\",");
-            if(child.getType() == 0) { //书签夹，只添加children字符串信息
-                nxtLayer.append("\"children\":").append("\"").append(child.getChildren()).append("\"}");
-            } else {
-                nxtLayer.append("\"url\":").append("\"").append(child.getUrl()).append("\"}");
+        if(!bt.getChildren().equals("")) {
+            for (int i = 0; i < childIDs.length; i++) {
+                BookmarkTree child = btDao.getBookmarkTreeByID(Integer.parseInt(childIDs[i]));
+                nxtLayer.append("{\"title\":").append("\"").append(child.getTitle()).append("\",");
+                nxtLayer.append("\"btID\":").append("\"").append(child.getID()).append("\",");
+                nxtLayer.append("\"type\":").append("\"").append(child.getType()).append("\",");
+                nxtLayer.append("\"public\":").append("\"").append(child.getIsPublic()).append("\",");
+                nxtLayer.append("\"favorites\":").append("\"").append(child.getFavorites()).append("\"");
+                if (child.getType() != 0) { //书签，还需添加url
+                    nxtLayer.append(",");
+                    nxtLayer.append("\"url\":").append("\"").append(child.getUrl()).append("\"");
+                } /*else {
+                nxtLayer.append("\"children\":").append("\"").append(child.getChildren()).append("\"");
+            }*/
+                nxtLayer.append("}");
+                if (i < childIDs.length - 1) nxtLayer.append(",");
             }
-            if(i < childIDs.length - 1) nxtLayer.append(",");
         }
         nxtLayer.append("]}}");
         return nxtLayer.toString();
@@ -201,7 +251,7 @@ public class BookmarkTreeService {
         return (res == 1) ? 1 : -1;
     }
 
-
+    private static List<BookmarkTree> pBTList;  //保存强复制过程中其他用户的书签夹对象, 复制结束给所有对象的favorites加1
     private static List<BookmarkTree> copyList; //保存强复制过程中新建的对象
     private static int btIDMax;    //book表中最大的ID序号
     /**
@@ -217,6 +267,8 @@ public class BookmarkTreeService {
             return -2; //要复制的书签夹不存在, 或uid属性与pid不相符, 或要复制的书签夹的children为空(没有子书签(夹))
 
         copyList = new LinkedList<>();
+        pBTList = new LinkedList<>();
+        pBTList.add(pRoot);
 
         if(pRoot.getIsPublic() == 1) {  //书签夹是公开的
             //强复制, 需要新建对象，并修改属性: <ID, parentID> (相对应,放到map里), uid, children(根据前面的map)
@@ -236,6 +288,7 @@ public class BookmarkTreeService {
             newRoot.setID(btIDMax);
             newRoot.setParentID(rootID);
             newRoot.setUid(uid);
+            newRoot.setFavorites(0);
             copyList.add(newRoot); //目前children和pRoot的一样
 
             doCopyBT(pRoot.getID(), newRoot, uid); //开始复制pRoot的children信息(所有的子书签(夹))到newRoot下
@@ -246,6 +299,12 @@ public class BookmarkTreeService {
                 //System.out.println(bt);
                 res = userDao.addBook(bt);
                 if(res == 0) return -2; //添加失败
+            }
+            //保存强复制过程中其他用户的书签夹对象, 复制结束给所有对象的favorites加1
+            for(BookmarkTree bt : pBTList) {
+                //System.out.println(bt);
+                res = btDao.updateBTFavoritesByID(bt.getID());
+                if(res == 0) return -2; //更新失败
             }
             return 1;
 
@@ -259,6 +318,7 @@ public class BookmarkTreeService {
         newRoot.setChildren(""); //需要重新加入child
         for(BookmarkTree child : btDao.getAllChild(pRootID)) {
             //System.out.println(child);
+            pBTList.add(child);
             //针对每个child, 需要新建对应的对象，并设置属性: ID、parentID、uid、children
             btIDMax++;
             newRoot.setChildren(newRoot.getChildren() + btIDMax + ",");
@@ -266,6 +326,7 @@ public class BookmarkTreeService {
             newChild.setID(btIDMax);
             newChild.setParentID(newRoot.getID());
             newChild.setUid(uid);
+            newChild.setFavorites(0);
             copyList.add(newChild);
 
             if(child.getType() == 0) {
@@ -273,6 +334,8 @@ public class BookmarkTreeService {
             }
         }
     }
+
+
 
 
     //======================插件端的接口==============================
@@ -297,14 +360,24 @@ public class BookmarkTreeService {
         //验证成功，开始上传
         //先处理根结点(默认书签夹，用户注册时默认添加，需要更改children信息)
         Integer rootID = userDao.getRootIDByName(uname);       //当前用户书签树的根结点(默认书签夹)
-        maxBtID = userDao.getMaxBookID();         //book表中最大的ID序号
-        uid = userDao.getUIDByName(uname);
+
         BookmarkTree root = btDao.getBookmarkTreeByID(rootID); //需要更新children信息
         if(root == null) return -1;
-
+        //System.out.println(root);
+        uid = root.getUid();
+        //System.out.println(uid);
         //覆盖上传，要先删除根结点下的所有书签夹
-        for(String childID : root.getChildren().split(","))
-            deleteBT(uid, Integer.parseInt(childID));
+        if(!root.getChildren().equals("")) {
+            for (String childID : root.getChildren().split(",")) {
+                //System.out.println("childID:" + childID);
+                int res = deleteBT(uid, Integer.parseInt(childID));
+                //System.out.println("delete res: " + res);
+            }
+        }
+
+        maxBtID = userDao.getMaxBookID();         //book表中最大的ID序号
+        //uid = userDao.getUIDByName(uname);
+        //System.out.println("maxBtID" + maxBtID);
 
         root.setChildren("");
 
@@ -326,9 +399,12 @@ public class BookmarkTreeService {
 
         //再将所有解析出的对象加入数据库
         for(BookmarkTree bt : childList) {
+            //System.out.println(bt);
             res = userDao.addBook(bt);
             if(res == 0) return -1;
         }
+
+        childList.clear();
 
         return (System.currentTimeMillis() - startTime);
     }
@@ -374,6 +450,7 @@ public class BookmarkTreeService {
         data = new StringBuilder("{\"data\":{");
 
         User user = userDao.getByUId(uid);
+        if(user == null) return "error";
         //System.out.println(user);
         String uname = user.getName();
         String password = user.getPassword();
@@ -383,14 +460,15 @@ public class BookmarkTreeService {
         Integer rootID = user.getRootID();   //用户的书签树根结点ID
         BookmarkTree root = btDao.getBookmarkTreeByID(rootID);
 
-        if(root != null && root.getChildren() != null && root.getIsPublic() == 1) {  //是公开的书签夹
+        if(root != null && root.getChildren() != null) {
             data.append("\"children\":[");
             serializeBT(root);
+            data.append("]");
         } else {
             return "error";
         }
 
-        return data.append("]}}").toString();
+        return data.append("}}").toString();
     }
 
     private static void serializeBT(BookmarkTree root) {
@@ -405,13 +483,15 @@ public class BookmarkTreeService {
             data.append("\"children\":[");
             String[] children = root.getChildren().split(",");
             //System.out.println(children.length);
-            for(int i = 0; i < children.length; i++) {
-                int btID = Integer.parseInt(children[i]);
-                //System.out.println(btID);
-                BookmarkTree child = btDao.getBookmarkTreeByID(btID);
-                serializeBT(child);
-                if(i < children.length - 1)
-                    data.append(",");
+            if(!root.getChildren().equals("")){
+                for(int i = 0; i < children.length; i++) {
+                    int btID = Integer.parseInt(children[i]);
+                    //System.out.println(btID);
+                    BookmarkTree child = btDao.getBookmarkTreeByID(btID);
+                    serializeBT(child);
+                    if(i < children.length - 1)
+                        data.append(",");
+                }
             }
             data.append("]}");
         } else {  //书签
